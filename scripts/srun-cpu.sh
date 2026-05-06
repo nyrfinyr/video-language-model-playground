@@ -1,6 +1,1 @@
 srun --immediate=10000 --partition=all_serial --account=sai2026 -w ailb-login-03 --time 00:05:00 --mem=4G --pty bash
-
-
-
-
-source /homes/avalenza/.local/bin/uv
