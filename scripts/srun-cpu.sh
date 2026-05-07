@@ -1,1 +1,1 @@
-srun --immediate=10000 --partition=all_serial --account=sai2026 -w ailb-login-02 --time 00:30:00 --gres=gpu:1 --mem=8G --pty bash
+srun --immediate=10000 --partition=all_serial --account=sai2026 -w ailb-login-03 --time 00:30:00 --gres=gpu:1 --mem=8G --pty bash
