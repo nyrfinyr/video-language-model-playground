@@ -6,7 +6,7 @@ dependencies = [
     "transformers>=5.7.0",
     "torch>=2.6.0",
     "accelerate>=1.0.0",
-    "pydevd-pycharm",
+    "debugpy",
 ]
 
 [project.scripts]
