@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-PROJECT_DIR="/work/tesi_avalenza/video-language-model-playground"
+PROJECT_DIR="/homes/avalenza/video-language-model-playground"
 DEBUGPY_PORT=5678
 
 cd "$PROJECT_DIR"
