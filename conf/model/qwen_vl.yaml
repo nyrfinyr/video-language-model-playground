@@ -1,0 +1,3 @@
+name: qwen_vl
+torch_dtype: float16          # float16 | bfloat16 | float32
+device_map: auto
