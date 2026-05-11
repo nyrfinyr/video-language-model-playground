@@ -1,17 +1,1 @@
-#!/bin/bash
-set -euo pipefail
-
-PROJECT_DIR="/homes/avalenza/video-language-model-playground"
-DEBUGPY_PORT=5678
-
-cd "$PROJECT_DIR"
-source .venv/bin/activate
-
-echo "=== debugpy ==="
-echo "Nodo: $(hostname)"
-echo "In ascolto su 0.0.0.0:${DEBUGPY_PORT} — attendo PyCharm..."
-echo "Sul Mac: bash scripts/tunnel-pycharm.sh -> inserisci $(hostname)"
-echo "In PyCharm: Run -> Attach to Process / Attach to DAP -> localhost:${DEBUGPY_PORT}"
-echo "---------------"
-
-python -m debugpy --listen "0.0.0.0:${DEBUGPY_PORT}" --wait-for-client main.py
+srun -c 8 --account=sai2026 --partition=all_serial -w ailb-login-02 --mem=16G --gres=gpu:1 -t 01:00:00 --pty /homes/avalenza/pycharm/bin/remote-dev-server run /homes/avalenza/video-language-model-playground
