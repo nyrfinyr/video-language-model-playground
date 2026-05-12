@@ -94,7 +94,7 @@ class Qwen25VL3B(BaseVLM):
             videos=video_inputs,
             padding=True,
             return_tensors="pt",
-            **video_kwargs
+            video_kwargs=video_kwargs
         ).to(self.model.device)
 
         return inputs
