@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 
 import torch
+from .media import MediaItem, Text
 from transformers import GenerationConfig
 
 
@@ -42,22 +42,8 @@ class BaseVLM(ABC):
         """
 
     @abstractmethod
-    def build_messages(self, text: str, image_url: Optional[str] = None) -> list[dict]:
-        """Build a chat-formatted message list for the underlying model.
-
-        Different VLM families expect different content schemas inside the
-        chat template (e.g. `{"type": "image", "url": ...}` for the unified
-        transformers API, `{"type": "image", "image": ...}` for legacy
-        Qwen-VL, image placeholders inside the text for LLaVA-1.5, etc.).
-        Each subclass is responsible for producing the exact shape consumed
-        by its own `processor.apply_chat_template`.
-
-        Args:
-            text: User prompt text.
-            image_url: Optional image reference (URL, local path, or any
-                identifier supported by the concrete processor). When
-                `None`, the returned messages should contain text only.
-
+    def build_messages(self, text: Text, media: MediaItem) -> list[dict]:
+        """
         Returns:
             A list of chat messages (dicts with `role` and `content`) ready
             to be passed to `generate`.
@@ -70,23 +56,7 @@ class BaseVLM(ABC):
         generation_config: GenerationConfig | None = None,
         **generate_kwargs,
     ) -> str:
-        """Run the model on `messages` and return the decoded completion.
-
-        A typical implementation: apply the chat template to obtain model
-        inputs (token ids plus vision tensors), call `self.model.generate`
-        under `torch.no_grad()`, strip the prompt prefix from the output
-        ids, and decode only the newly generated tokens.
-
-        Args:
-            messages: Chat messages as produced by `build_messages`.
-            generation_config: Optional `GenerationConfig` controlling
-                sampling/beam-search/length. When `None`, the model's
-                default generation config is used.
-            **generate_kwargs: Extra keyword arguments forwarded to
-                `model.generate` (e.g. `max_new_tokens`, `do_sample`,
-                `temperature`). These override fields of
-                `generation_config` when both are provided.
-
+        """
         Returns:
             The generated assistant response as a decoded string, with
             special tokens stripped and the input prompt removed.

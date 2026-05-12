@@ -1,2 +1,5 @@
-prompt: "Describe this image."
+# Default smoke-test run: the canonical Qwen-VL demo image (beach, woman
+# with dog) plus a prompt that exercises detail, grounding, and mood —
+# useful to spot regressions in any of those at a glance.
+prompt: "Describe this image in detail: the people and objects you see, what they are doing, the setting, and the overall mood."
 image_url: "https://qianwen-res.oss-cn-beijing.aliyuncs.com/Qwen-VL/assets/demo.jpeg"
