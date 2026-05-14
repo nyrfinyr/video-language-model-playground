@@ -18,11 +18,8 @@ nvidia-smi --query-gpu=name,memory.total,compute_cap --format=csv,noheader || tr
 
 cd /homes/avalenza/video-language-model-playground
 
-# Stack trace completo se Hydra intercetta un'eccezione.
 export HYDRA_FULL_ERROR=1
 
-# HF_HOME via Hydra (vedi conf/run/default.yaml + main.py:35-36).
-# La P100 non supporta BF16 → forziamo float16.
 uv run python main.py \
     run.hf_home=/work/tesi_avalenza/hf \
-    model.torch_dtype=float16
+    model.torch_dtype=bfloat16

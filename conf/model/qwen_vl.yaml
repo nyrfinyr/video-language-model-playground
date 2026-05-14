@@ -1,5 +1,5 @@
 name: qwen25_vl_3b
-torch_dtype: bfloat16          # float16 | bfloat16 | float32
+torch_dtype: float16          # float16 | bfloat16 | float32
 device_map: auto
 
 # Per-image visual-token budget (in pixels, post-resize).
@@ -7,4 +7,4 @@ device_map: auto
 # Lower max_pixels to cap VRAM on high-res inputs; raise min_pixels to
 # preserve detail on small images.
 min_pixels: null
-max_pixels: 3211264   # 4096 * 28 * 28 — caps visual tokens at ~4096 to fit a Quadro RTX 5000 (16 GB) without OOM in the ViT attention
+max_pixels: 802816
