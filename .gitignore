@@ -10,6 +10,7 @@
 /dataSources.local.xml
 .idea/
 /CLAUDE.md
+/.env
 .env
 wandb/
 outputs/

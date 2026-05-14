@@ -10,4 +10,4 @@ image_url: "https://qianwen-res.oss-cn-beijing.aliyuncs.com/Qwen-VL/assets/demo.
 # `python main.py run.hf_home=/work/shared/hf`. main.py applica questo
 # valore PRIMA di importare transformers, perché `huggingface_hub` legge
 # le costanti di cache al momento dell'import.
-hf_home: null
+hf_home: /work/tesi_avalenza/hf
