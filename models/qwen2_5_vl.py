@@ -8,10 +8,9 @@ from transformers import (
     Qwen2_5_VLForConditionalGeneration,
 )
 from qwen_vl_utils import process_vision_info
-
 from .base import BaseVLM
 from .media import MediaItem, Text
-
+import weave
 
 class Qwen25VL3B(BaseVLM):
     model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
@@ -118,7 +117,7 @@ class Qwen25VL3B(BaseVLM):
             clean_up_tokenization_spaces=False,
         )[0]
 
-
+    @weave.op
     def generate(
         self,
         messages: list[dict],

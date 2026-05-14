@@ -3,3 +3,11 @@
 # useful to spot regressions in any of those at a glance.
 prompt: "Describe this image in detail: the people and objects you see, what they are doing, the setting, and the overall mood."
 image_url: "https://qianwen-res.oss-cn-beijing.aliyuncs.com/Qwen-VL/assets/demo.jpeg"
+
+# Root della cache HuggingFace (modelli + datasets). null = lascia il
+# default (`$HF_HOME` se già esportata, altrimenti `~/.cache/huggingface`).
+# Su HPC, override col path della cache condivisa, es.
+# `python main.py run.hf_home=/work/shared/hf`. main.py applica questo
+# valore PRIMA di importare transformers, perché `huggingface_hub` legge
+# le costanti di cache al momento dell'import.
+hf_home: null

@@ -10,3 +10,7 @@
 /dataSources.local.xml
 .idea/
 /CLAUDE.md
+.env
+wandb/
+outputs/
+multirun/

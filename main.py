@@ -1,20 +1,14 @@
+import os
 from typing import cast
 
 import hydra
 import torch
 from omegaconf import DictConfig, OmegaConf
-from transformers import GenerationConfig
-
-from models import Qwen25VL3B, Text, Image
 
 _DTYPES = {
     "float16": torch.float16,
     "bfloat16": torch.bfloat16,
     "float32": torch.float32,
-}
-
-_MODELS = {
-    "qwen25_vl_3b": Qwen25VL3B,
 }
 
 
@@ -33,8 +27,23 @@ def _print_gpu_info() -> None:
 def run(cfg: DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
     _print_gpu_info()
-
     torch.manual_seed(cfg.seed)
+
+    # `huggingface_hub` calcola le costanti di cache (`HF_HOME`,
+    # `HF_HUB_CACHE`, ...) al momento del primo import, quindi vanno
+    # iniettate PRIMA di importare transformers/models.
+    if cfg.run.hf_home:
+        os.environ["HF_HOME"] = cfg.run.hf_home
+
+    import weave
+    from transformers import GenerationConfig
+    from models import Qwen25VL3B, Text, Image
+
+    _MODELS = {
+        "qwen25_vl_3b": Qwen25VL3B,
+    }
+
+    weave.init('alesvale97-unimore/intro-example')
 
     # Pop the dispatch keys (`name`, `torch_dtype` need string→object lookup)
     # and forward everything else as **kwargs — that's how knobs like
