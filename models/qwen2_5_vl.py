@@ -1,3 +1,4 @@
+import logging
 from dataclasses import asdict
 
 import torch
@@ -12,8 +13,13 @@ from .base import BaseVLM
 from .media import MediaItem, Text
 import weave
 
+logger = logging.getLogger(__name__)
+
+
 class Qwen25VL3B(BaseVLM):
+
     model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
+
 
     def _load(
         self,
@@ -35,6 +41,10 @@ class Qwen25VL3B(BaseVLM):
         if max_pixels is not None:
             processor_kwargs["max_pixels"] = max_pixels
 
+        logger.info(
+            "Loading %s (dtype=%s, device_map=%s, min_pixels=%s, max_pixels=%s)",
+            self.model_id, torch_dtype, device_map, min_pixels, max_pixels,
+        )
         processor = AutoProcessor.from_pretrained(self.model_id, **processor_kwargs)
         model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
             self.model_id,
@@ -42,6 +52,7 @@ class Qwen25VL3B(BaseVLM):
             device_map=device_map,
             **kwargs,
         )
+        logger.info("Model loaded on device=%s", getattr(model, "device", "?"))
         return processor, model
 
 
@@ -117,6 +128,7 @@ class Qwen25VL3B(BaseVLM):
             clean_up_tokenization_spaces=False,
         )[0]
 
+
     @weave.op
     def generate(
         self,
@@ -132,10 +144,13 @@ class Qwen25VL3B(BaseVLM):
         fields of `generation_config`.
         """
         inputs = self._prepare_inputs(messages)
+        logger.debug("Prepared inputs: input_ids shape=%s", tuple(inputs.input_ids.shape))
         with torch.no_grad():
             generated_ids = self.model.generate(
                 **inputs,
                 generation_config=generation_config,
                 **generate_kwargs,
             )
-        return self._decode_completion(inputs, generated_ids)
+        completion = self._decode_completion(inputs, generated_ids)
+        logger.debug("Generated %d new tokens", generated_ids.shape[1] - inputs.input_ids.shape[1])
+        return completion

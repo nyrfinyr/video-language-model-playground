@@ -1,0 +1,9 @@
+# wandb run configuration.
+# `mode: disabled` turns off both wandb and weave (offline debug).
+# `mode: offline` logs locally — sync later with `wandb sync <run-dir>`.
+project: intro-example
+entity: alesvale97-unimore
+mode: online       # online | offline | disabled
+tags: []
+name: null         # null = wandb auto-generates a run name
+notes: null

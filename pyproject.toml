@@ -13,10 +13,12 @@ dependencies = [
     "weave>=0.51.0",
     "opentelemetry-proto>=1.27",
     "torchvision>=0.22.1",
+    "datasets>=3.0.0",
 ]
 
 [project.scripts]
 main = "main:main"
+prefetch_egoschema = "utils.prefetch_egoschema:main"
 
 [tool.uv]
 link-mode = "copy"

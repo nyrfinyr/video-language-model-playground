@@ -2,6 +2,7 @@ defaults:
   - model: qwen_vl
   - generation: balanced
   - run: default
+  - wandb: default
   - _self_
 
 seed: 42

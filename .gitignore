@@ -12,7 +12,7 @@
 /CLAUDE.md
 /.env
 .env
-wandb/
-outputs/
-multirun/
+/wandb/
+/outputs/
+/multirun/
 /logs/

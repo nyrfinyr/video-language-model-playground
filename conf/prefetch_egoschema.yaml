@@ -1,0 +1,31 @@
+defaults:
+  - wandb: default
+  - _self_
+
+# Override wandb defaults for this script (separate project so prefetch
+# runs don't clutter the inference project's run list).
+wandb:
+  project: egoschema-prefetch
+  tags: [prefetch, egoschema]
+
+# HF dataset providing QA metadata. lmms-lab/egoschema is metadata-only
+# (question, options, answer, video_idx) — the actual mp4s live elsewhere.
+metadata_repo: lmms-lab/egoschema
+# HF dataset providing the raw .mp4 files at `videos/{video_idx}.mp4`.
+# This repo carries all 500 Subset videos (verified by basename overlap);
+# `VLM2Vec/egoschema-rawvideo` is a different selection and only covers ~10%.
+videos_repo: yanlaiy/EgoSchema
+# Dataset config: "Subset" = 500 MCQs with public answers (good for
+# smoke-testing the pipeline); "MC" / "MC_PPL" / "GENERATION" = 5k.
+config: Subset
+# Number of samples to materialize.
+n: 20
+# Self-contained dump path; sbatch jobs read the .mp4 + metadata.jsonl
+# from here. Default derives from `$HOME` so PyCharm run configs work
+# without overrides; on the cluster pass `out_dir=/work/...` on the CLI.
+out_dir: ${oc.env:HOME}/datasets/egoschema_subset_20
+# HF cache root. Resolves to `$HF_HOME` if exported (e.g. on HPC where
+# `.bashrc` sets `/work/tesi_avalenza/hf`), otherwise `null` → script
+# leaves `os.environ` alone and `datasets` falls back to
+# `~/.cache/huggingface`.
+hf_home: ${oc.env:HF_HOME,null}
