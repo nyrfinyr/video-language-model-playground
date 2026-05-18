@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from pathlib import Path
 
 
 @dataclass(frozen=True)
@@ -16,9 +17,9 @@ class Image:
 @dataclass(frozen=True)
 class Video:
     type: str = field(default="video", init=False)
-    video: str
+    video: str | Path
     max_pixels: int = 360 * 420
-    fps: float = 1.0
+    fps: float = 0.5
 
 
 @dataclass(frozen=True)

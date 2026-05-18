@@ -6,3 +6,11 @@ defaults:
   - _self_
 
 seed: 42
+
+# Root della cache HuggingFace (modelli + datasets). null = lascia il
+# default (`$HF_HOME` se già esportata, altrimenti `~/.cache/huggingface`).
+# Su HPC override col path della cache condivisa, es.
+# `python main.py hf_home=/work/shared/hf`. main.py applica questo
+# valore PRIMA di importare transformers, perché `huggingface_hub` legge
+# le costanti di cache al momento dell'import.
+hf_home: ${oc.env:HF_HOME,null}

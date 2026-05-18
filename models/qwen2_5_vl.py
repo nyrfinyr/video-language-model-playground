@@ -56,7 +56,7 @@ class Qwen25VL3B(BaseVLM):
         return processor, model
 
 
-    def build_messages(self, text: Text, media: MediaItem) -> list[dict]:
+    def build_messages(self, media: MediaItem, text: Text) -> list[dict]:
         """Wrap a `(media, text)` pair in the Qwen2.5-VL chat schema.
 
         Produces a single-turn user message whose `content` is the list of

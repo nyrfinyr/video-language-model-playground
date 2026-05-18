@@ -42,7 +42,7 @@ class BaseVLM(ABC):
         """
 
     @abstractmethod
-    def build_messages(self, text: Text, media: MediaItem) -> list[dict]:
+    def build_messages(self, media: MediaItem, text: Text) -> list[dict]:
         """
         Returns:
             A list of chat messages (dicts with `role` and `content`) ready
