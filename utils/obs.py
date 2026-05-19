@@ -51,6 +51,7 @@ def init_observability(cfg: DictConfig, *, with_weave: bool = True) -> None:
         tags=list(wcfg.tags) if wcfg.tags else None,
         name=wcfg.name,
         notes=wcfg.notes,
+        group=wcfg.group,
         config=OmegaConf.to_container(cfg, resolve=True),
         dir=run_dir,
     )

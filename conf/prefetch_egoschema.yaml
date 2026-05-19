@@ -18,12 +18,13 @@ videos_repo: yanlaiy/EgoSchema
 # Dataset config: "Subset" = 500 MCQs with public answers (good for
 # smoke-testing the pipeline); "MC" / "MC_PPL" / "GENERATION" = 5k.
 config: Subset
-# Number of samples to materialize.
-n: 20
+# Number of samples to materialize. `null` = consume the full stream
+# (~500 for Subset). Override on the CLI for smoke tests, e.g. `n=20`.
+n: null
 # Self-contained dump path; sbatch jobs read the .mp4 + metadata.jsonl
 # from here. Default derives from `$HOME` so PyCharm run configs work
 # without overrides; on the cluster pass `out_dir=/work/...` on the CLI.
-out_dir: ${oc.env:HOME}/datasets/egoschema_subset_20
+out_dir: /work/tesi_avalenza/datasets/egoschema
 # HF cache root. Resolves to `$HF_HOME` if exported (e.g. on HPC where
 # `.bashrc` sets `/work/tesi_avalenza/hf`), otherwise `null` → script
 # leaves `os.environ` alone and `datasets` falls back to

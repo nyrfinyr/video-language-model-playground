@@ -46,7 +46,7 @@ def prefetch(
     metadata_repo: str,
     videos_repo: str,
     config: str,
-    n: int,
+    n: int | None,
     out_dir: str,
 ) -> dict:
     from datasets import load_dataset
@@ -58,14 +58,20 @@ def prefetch(
 
     # `lmms-lab/egoschema` is metadata-only (no `video` column). Streaming
     # avoids materializing the whole split into the HF cache; `.take(n)`
-    # bounds it to the first n rows so we can read just the `video_idx`
-    # we need to drive targeted .mp4 downloads.
-    logger.info("Streaming first %d rows from %s [%s]", n, metadata_repo, config)
+    # bounds it to the first n rows. `n=None` consumes the full stream
+    # (~500 rows for the Subset config).
+    logger.info(
+        "Streaming %s rows from %s [%s]",
+        "all" if n is None else f"first {n}",
+        metadata_repo,
+        config,
+    )
     stream = load_dataset(metadata_repo, config, split="test", streaming=True)
-    samples = list(stream.take(n))
+    samples = list(stream if n is None else stream.take(n))
     if not samples:
         raise RuntimeError(f"No samples streamed from {metadata_repo} [{config}].")
-    logger.info("Materialized %d samples; columns=%s", len(samples), list(samples[0].keys()))
+    total = len(samples)
+    logger.info("Materialized %d samples; columns=%s", total, list(samples[0].keys()))
 
     metadata = []
     for i, sample in enumerate(samples):
@@ -77,7 +83,7 @@ def prefetch(
         local_video = out / repo_path
 
         if local_video.exists():
-            logger.info("[%d/%d] already cached: %s", i + 1, n, local_video.name)
+            logger.info("[%d/%d] already cached: %s", i + 1, total, local_video.name)
         else:
             hf_hub_download(
                 repo_id=videos_repo,
@@ -85,7 +91,7 @@ def prefetch(
                 filename=repo_path,
                 local_dir=str(out),
             )
-            logger.info("[%d/%d] fetched %s", i + 1, n, repo_path)
+            logger.info("[%d/%d] fetched %s", i + 1, total, repo_path)
 
         sample["video"] = str(local_video.relative_to(out))
         metadata.append(sample)

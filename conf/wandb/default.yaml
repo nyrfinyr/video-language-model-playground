@@ -7,3 +7,4 @@ mode: online       # online | offline | disabled
 tags: []
 name: null         # null = wandb auto-generates a run name
 notes: null
+group: null

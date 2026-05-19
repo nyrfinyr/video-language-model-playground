@@ -22,8 +22,9 @@ export HYDRA_FULL_ERROR=1
 
 uv run python main.py \
     hf_home=/work/tesi_avalenza/hf \
-    run.root=/work/tesi_avalenza/datasets/egoschema_subset_20 \
+    run.root=/work/tesi_avalenza/datasets/egoschema \
     model.torch_dtype=bfloat16 \
     wandb.tags=[eval,egoschema,sbatch] \
+    wandb.group=qwen25vl3b-egoschema \
     wandb.name=qwen25vl3b-egoschema-${SLURM_JOB_ID} \
     wandb.notes="slurm ${SLURM_JOB_ID} on $(hostname)"
