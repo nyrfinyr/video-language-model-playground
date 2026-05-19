@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import weave
-from omegaconf import DictConfig
 
 if TYPE_CHECKING:
     from transformers import GenerationConfig
@@ -62,17 +61,17 @@ def parse_mcq_letter(raw: str, n_options: int) -> int | None:
     return idx if idx < n_options else None
 
 
-def make_predict(vlm: BaseVLM, cfg: DictConfig):
-    """Costruisce la `@weave.op predict` chiusa su `vlm`+`gen_cfg`.
+def make_predict(vlm: BaseVLM, gen_cfg: GenerationConfig, fps: float):
+    """Costruisce la `@weave.op predict` chiusa su `vlm`+`gen_cfg`+`fps`.
     """
     from models import Text, Video
 
     @weave.op
     def predict(video_path: str, question: str, options: list[str]) -> dict:
         prompt = format_mcq_prompt(question, options)
-        media = Video(video_path, fps=cfg.run.fps)
+        media = Video(video_path, fps=fps)
         messages = vlm.build_messages(media, Text(prompt))
-        raw = vlm.generate(messages, generation_config=cfg.generation)
+        raw = vlm.generate(messages, generation_config=gen_cfg)
         return {"raw": raw, "pred": parse_mcq_letter(raw, len(options))}
 
     return predict

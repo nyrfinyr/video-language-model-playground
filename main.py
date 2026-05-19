@@ -58,7 +58,7 @@ def run(cfg: DictConfig) -> None:
         dataset=dataset,
         scorers=[mcq_accuracy],
     )
-    summary = asyncio.run(evaluation.evaluate(make_predict(vlm, cfg)))
+    summary = asyncio.run(evaluation.evaluate(make_predict(vlm, gen_cfg, cfg.run.fps)))
     logger.info("Eval summary: %s", summary)
 
 
