@@ -27,12 +27,9 @@ def run(cfg: DictConfig) -> None:
 
     if cfg.hf_home:
         os.environ["HF_HOME"] = cfg.hf_home
-    # GPU singola: serializza le predict di weave (default = 20 → OOM /
-    # contention sul device). Letto a ogni chiamata di evaluate().
+
     os.environ.setdefault("WEAVE_PARALLELISM", "1")
 
-    # HF_HOME va settato prima: transformers/huggingface_hub leggono le
-    # costanti di cache al momento dell'import.
     from transformers import GenerationConfig
     from models import Qwen25VL3B
     from models.base import BaseVLM
@@ -61,7 +58,7 @@ def run(cfg: DictConfig) -> None:
         dataset=dataset,
         scorers=[mcq_accuracy],
     )
-    summary = asyncio.run(evaluation.evaluate(make_predict(vlm, gen_cfg)))
+    summary = asyncio.run(evaluation.evaluate(make_predict(vlm, cfg)))
     logger.info("Eval summary: %s", summary)
 
 

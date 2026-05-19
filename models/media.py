@@ -19,7 +19,7 @@ class Video:
     type: str = field(default="video", init=False)
     video: str | Path
     max_pixels: int = 360 * 420
-    fps: float = 0.5
+    fps: float = 1
 
 
 @dataclass(frozen=True)
