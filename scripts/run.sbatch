@@ -5,7 +5,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=16G
-#SBATCH --time=00:06:00
+#SBATCH --time=02:30:00
 #SBATCH --output=/homes/avalenza/video-language-model-playground/logs/%x-%j.out
 #SBATCH --error=/homes/avalenza/video-language-model-playground/logs/%x-%j.err
 

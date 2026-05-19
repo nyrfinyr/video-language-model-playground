@@ -29,4 +29,4 @@ out_dir: /work/tesi_avalenza/datasets/egoschema
 # `.bashrc` sets `/work/tesi_avalenza/hf`), otherwise `null` → script
 # leaves `os.environ` alone and `datasets` falls back to
 # `~/.cache/huggingface`.
-hf_home: ${oc.env:HF_HOME,null}
+hf_home: ${oc.env:HF_HOME,/work/tesi_avalenza/hf}
