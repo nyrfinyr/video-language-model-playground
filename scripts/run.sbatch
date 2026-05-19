@@ -20,11 +20,13 @@ cd /homes/avalenza/video-language-model-playground
 
 export HYDRA_FULL_ERROR=1
 
+MODEL="${MODEL:-qwen2_5_vl_3b}"
+
 uv run python main.py \
+    model=${MODEL} \
     hf_home=/work/tesi_avalenza/hf \
     run.root=/work/tesi_avalenza/datasets/egoschema \
-    model.torch_dtype=bfloat16 \
     wandb.tags=[eval,egoschema,sbatch] \
-    wandb.group=qwen25vl3b-egoschema \
-    wandb.name=qwen25vl3b-egoschema-${SLURM_JOB_ID} \
+    wandb.group=${MODEL}-egoschema \
+    wandb.name=${MODEL}-egoschema-${SLURM_JOB_ID} \
     wandb.notes="slurm ${SLURM_JOB_ID} on $(hostname)"

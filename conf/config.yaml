@@ -1,5 +1,5 @@
 defaults:
-  - model: qwen_vl
+  - model: qwen2_5_vl_3b
   - generation: balanced
   - run: default
   - wandb: default

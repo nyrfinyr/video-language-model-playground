@@ -7,6 +7,7 @@ from transformers import (
     BatchFeature,
     GenerationConfig,
     Qwen2_5_VLForConditionalGeneration,
+    Qwen3VLForConditionalGeneration,
 )
 from qwen_vl_utils import process_vision_info
 from .base import BaseVLM
@@ -16,10 +17,15 @@ import weave
 logger = logging.getLogger(__name__)
 
 
-class Qwen25VL3B(BaseVLM):
+class Qwen(BaseVLM):
+    """Shared implementation for the Qwen-VL family (2.5 and 3.x).
 
-    model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
+    The chat schema, vision-info resolution, processor call, and decoding
+    are identical across versions: subclasses only pin `model_id` and
+    `model_cls` (the family-specific `*ForConditionalGeneration` class).
+    """
 
+    model_cls: type  # override in subclass
 
     def _load(
         self,
@@ -29,11 +35,11 @@ class Qwen25VL3B(BaseVLM):
         max_pixels: int | None = None,
         **kwargs,
     ):
-        """Load the Qwen2.5-VL processor + model.
+        """Load the Qwen-VL processor + model.
 
         `min_pixels` and `max_pixels` cap the per-image visual-token budget
         (forwarded to `AutoProcessor`); leave as `None` to keep the model's
-        default 4–16384 range.
+        default range.
         """
         processor_kwargs = {}
         if min_pixels is not None:
@@ -46,7 +52,7 @@ class Qwen25VL3B(BaseVLM):
             self.model_id, torch_dtype, device_map, min_pixels, max_pixels,
         )
         processor = AutoProcessor.from_pretrained(self.model_id, **processor_kwargs)
-        model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
+        model = self.model_cls.from_pretrained(
             self.model_id,
             torch_dtype=torch_dtype,
             device_map=device_map,
@@ -55,9 +61,8 @@ class Qwen25VL3B(BaseVLM):
         logger.info("Model loaded on device=%s", getattr(model, "device", "?"))
         return processor, model
 
-
     def build_messages(self, media: MediaItem, text: Text) -> list[dict]:
-        """Wrap a `(media, text)` pair in the Qwen2.5-VL chat schema.
+        """Wrap a `(media, text)` pair in the Qwen-VL chat schema.
 
         Produces a single-turn user message whose `content` is the list of
         parts the Qwen chat template expects: each `MediaItem` / `Text`
@@ -76,7 +81,6 @@ class Qwen25VL3B(BaseVLM):
             }
         ]
 
-
     def _prepare_inputs(self, messages: list[dict]) -> BatchFeature:
         """Turn chat `messages` into a model-ready `BatchFeature` on device.
 
@@ -84,16 +88,9 @@ class Qwen25VL3B(BaseVLM):
         `process_vision_info`, then `self.processor(...)`. The returned object
         already lives on `self.model.device`.
         """
-        # Render the chat into the model's prompt string (special tokens like
-        # <|im_start|> + placeholders <|image_pad|>/<|video_pad|>), without
-        # tokenizing yet; `add_generation_prompt` appends the assistant header
-        # so the model knows to continue from there.
         text = self.processor.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True
         )
-        # Walk the messages, resolve every {"image": ...} / {"video": ...}
-        # entry (path, URL, base64, PIL, np array, ...) and return decoded
-        # PIL images / video tensors ready for the processor.
         image_inputs, video_inputs, video_kwargs = process_vision_info(
             messages, return_video_kwargs=True
         )
@@ -104,11 +101,10 @@ class Qwen25VL3B(BaseVLM):
             videos=video_inputs,
             padding=True,
             return_tensors="pt",
-            video_kwargs=video_kwargs
+            video_kwargs=video_kwargs,
         ).to(self.model.device)
 
         return inputs
-
 
     def _decode_completion(
         self,
@@ -127,7 +123,6 @@ class Qwen25VL3B(BaseVLM):
             skip_special_tokens=True,
             clean_up_tokenization_spaces=False,
         )[0]
-
 
     @weave.op
     def generate(
@@ -154,3 +149,18 @@ class Qwen25VL3B(BaseVLM):
         completion = self._decode_completion(inputs, generated_ids)
         logger.debug("Generated %d new tokens", generated_ids.shape[1] - inputs.input_ids.shape[1])
         return completion
+
+
+class Qwen25VL3B(Qwen):
+    model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
+    model_cls = Qwen2_5_VLForConditionalGeneration
+
+
+class Qwen3VL2B(Qwen):
+    model_id = "Qwen/Qwen3-VL-2B-Instruct"
+    model_cls = Qwen3VLForConditionalGeneration
+
+
+class Qwen3VL4B(Qwen):
+    model_id = "Qwen/Qwen3-VL-4B-Instruct"
+    model_cls = Qwen3VLForConditionalGeneration

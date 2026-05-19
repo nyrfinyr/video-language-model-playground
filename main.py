@@ -31,11 +31,13 @@ def run(cfg: DictConfig) -> None:
     os.environ.setdefault("WEAVE_PARALLELISM", "1")
 
     from transformers import GenerationConfig
-    from models import Qwen25VL3B
+    from models import Qwen25VL3B, Qwen3VL2B, Qwen3VL4B
     from models.base import BaseVLM
 
     _MODELS: dict[str, type[BaseVLM]] = {
         "qwen25_vl_3b": Qwen25VL3B,
+        "qwen3_vl_2b": Qwen3VL2B,
+        "qwen3_vl_4b": Qwen3VL4B,
     }
 
     init_observability(cfg)

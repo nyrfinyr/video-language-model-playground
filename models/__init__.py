@@ -1,5 +1,5 @@
 from .media import Image, MediaItem, Video, VideoFrames, Text
-from .qwen2_5_vl import Qwen25VL3B
+from .qwen import Qwen, Qwen25VL3B, Qwen3VL2B, Qwen3VL4B
 
 __all__ = [
     "Image",
@@ -7,5 +7,8 @@ __all__ = [
     "VideoFrames",
     "Text",
     "MediaItem",
+    "Qwen",
     "Qwen25VL3B",
+    "Qwen3VL2B",
+    "Qwen3VL4B",
 ]

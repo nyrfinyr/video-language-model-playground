@@ -1,0 +1,10 @@
+name: qwen25_vl_3b
+torch_dtype: bfloat16          # float16 | bfloat16 | float32
+device_map: auto
+
+# Per-image visual-token budget (in pixels, post-resize).
+# null = keep the model defaults (min 4 * 28*28, max 16384 * 28*28).
+# Lower max_pixels to cap VRAM on high-res inputs; raise min_pixels to
+# preserve detail on small images.
+min_pixels: null
+max_pixels: 802816
