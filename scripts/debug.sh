@@ -1,1 +1,1 @@
-srun --export=ALL -c 8 --account=sai2026 --partition=all_serial -w ailb-login-02 --mem=16G --gres=gpu:1 -t 01:00:00 --pty /homes/avalenza/pycharm/bin/remote-dev-server run /homes/avalenza/video-language-model-playground
+srun --export=ALL -c 8 --account=sai2026 --partition=all_serial -w ailb-login-02 --mem=16G -t 03:00:00 --pty /homes/avalenza/pycharm/bin/remote-dev-server run /homes/avalenza/video-language-model-playground

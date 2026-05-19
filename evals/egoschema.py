@@ -6,11 +6,14 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import weave
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from transformers import GenerationConfig
     from models.base import BaseVLM
-
 
 # `\b` su input upper()-ato: matcha A..E come token isolato — quindi
 # pesca la lettera dentro "(A)", "A.", "Answer: B" ma non dentro
@@ -37,7 +40,7 @@ def load_egoschema(root: Path) -> list[dict]:
             "video_path": str(root / r["video"]),
             "question": r["question"],
             "options": [_OPTION_PREFIX_RE.sub("", o) for o in r["option"]],
-            "answer": r.get("answer"),
+            "answer": int(r["answer"]) if r.get("answer") is not None else None,
         }
         for r in rows
     ]
@@ -79,4 +82,10 @@ def make_predict(vlm: BaseVLM, gen_cfg: GenerationConfig, fps: float):
 
 @weave.op
 def mcq_accuracy(answer: int, output: dict) -> dict:
-    return {"correct": output["pred"] == answer}
+    pred = output["pred"]
+    logger.info(
+        "mcq_accuracy: answer=%r (%s) pred=%r (%s)",
+        answer, type(answer).__name__,
+        pred, type(pred).__name__,
+    )
+    return {"correct": pred == answer}

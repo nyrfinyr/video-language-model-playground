@@ -49,9 +49,6 @@ def run(cfg: DictConfig) -> None:
     samples = load_egoschema(Path(cfg.run.root))
     logger.info("Loaded %d samples from %s (%s)", len(samples), cfg.run.dataset, cfg.run.root)
 
-    # `Evaluation.dataset` è tipato `Dataset`: a runtime `list[dict]` viene
-    # convertita via BeforeValidator, ma il type-checker non lo vede →
-    # costruiamo esplicitamente Dataset+Table per pulizia statica.
     dataset = weave.Dataset(name=cfg.run.dataset, rows=weave.Table(samples))
     evaluation = weave.Evaluation(
         name=f"{cfg.run.dataset}-{cfg.model.name}",
